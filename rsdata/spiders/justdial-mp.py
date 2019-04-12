@@ -2,12 +2,10 @@ import scrapy
 from rsdata.items import Item
 import re
 
-class JustDialSpider(scrapy.Spider):
-    name = "justdial-rs"
-    cities = ["Ahmedabad", "Bangalore", 
-      "Chandigarh", "Chennai", "Coimbatore", 
-      "Delhi", "Goa", "Gurgaon", "Hyderabad", "Jaipur", "Kolkata", "Mumbai", 
-      "Noida", "Pune"
+class JustDialSpiderMP(scrapy.Spider):
+    name = "justdial-mp"
+    cities = [
+    "Indore","Bhopal","Jabalpur","Gwalior","Ujjain","Sagar","Dewas","Satna","Ratlam","Rewa","Katni","Singrauli","Burhanpur","Khandwa","Bhind","Chhindwara","Guna","Shivpuri","Vidisha","Chhatarpur","Damoh","Mandsaur","Khargone","Neemuch","Hoshangabad","Itarsi","Sehore","Betul","Seoni","Datia","Nagda"
     ]
 
     start_urls = [
@@ -24,9 +22,10 @@ class JustDialSpider(scrapy.Spider):
 
     def parse(self, response):
         
-        ity = response.url.replace("https://www.justdial.com/", "").split("/")[0]
-        if city not in cities:
-            return
+        city = response.url.replace("https://www.justdial.com/", "").split("/")[0].strip()
+        if city not in self.cities:
+            #yield None
+            pass
 
         for href in response.css('.mm-listview li a::attr("href")'):
             yield response.follow(href, self.parse)
@@ -36,12 +35,12 @@ class JustDialSpider(scrapy.Spider):
             item = Item()
             item["name"] = self.extract_with_css(dataitem, 'h2 a::attr("title")')
             item["url"] = self.extract_with_css(dataitem, 'h2 a::attr("href")')
-            item["area"] =  self.extract_with_css(dataitem, '.cont_sw_addr::text')
-            item["city"] =  response.css("h1::text").extract_first().split(" ")[-1].strip()
+            item["area"] =  self.extract_with_css(dataitem, '.cont_sw_addr::text').strip()
+            item["city"] =  city
             p = dataitem.css('p.contact-info span').xpath('@class').extract()[1:] 
             item["phone"] = ''.join([self.dict2.get(i.split()[1], 'p') for i in p])
             item["address"] = self.extract_with_css(dataitem, '.cont_fl_addr::text')
-            item["sender"] = 'justdial'
+            item["sender"] = 'justdial-mp'
             #yield response.follow(href, self.parse_data)
             yield item
 

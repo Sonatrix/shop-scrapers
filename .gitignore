@@ -1,2 +1,6 @@
 *.csv
-**/__pyc__/**
+*/__pyc__/**
+*.yml
+build/*
+project.egg-info/*
+*.pyc

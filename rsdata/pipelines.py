@@ -19,7 +19,7 @@ class RsdataPipeline(object):
             exporter.file.close()
 
     def _exporter_for_item(self, item):
-        city = item['city']
+        city = item['sender']
         if city not in self.year_to_exporter:
             f = open('{}.csv'.format(city), 'wb')
             exporter = CsvItemExporter(f)
