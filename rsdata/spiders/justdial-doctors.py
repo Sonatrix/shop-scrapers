@@ -4,8 +4,8 @@ import re
 from rsdata.cities import cities_list
 
 
-class JustDialSpider(scrapy.Spider):
-    name = "justdial-rs"
+class JustDialDoctors(scrapy.Spider):
+    name = "justdial-doctors"
     cities1 = ["Ahmedabad", "Bangalore", 
       "Chandigarh", "Chennai", "Coimbatore", 
       "Delhi", "Goa", "Gurgaon", "Hyderabad", "Jaipur", "Kolkata", "Mumbai", 
@@ -15,9 +15,7 @@ class JustDialSpider(scrapy.Spider):
     cities = cities1 + cities_list
 
     start_urls = [
-      'https://www.justdial.com/'+i+'/Restaurant-Collections/AllCategory' for i in cities
-    ] + [
-      'https://www.justdial.com/'+i+'/278/Daily-Needs_fil' for i in cities
+      'https://www.justdial.com/'+i+'/57/Doctor_fil' for i in cities
     ]
     
     dict1 = {'9d001':'0', '9d002':'1','9d003':'2','9d004':'3','9d005':'4','9d006':'5','9d007':'6','9d008':'7','9d009':'8','9d010':'9','9d011':'+','9d013':')','9d014':'('}
@@ -35,7 +33,7 @@ class JustDialSpider(scrapy.Spider):
         for href in response.css('.mm-listview li a::attr("href")'):
             yield response.follow(href, self.parse)
 
-        # follow links to author pages
+        # follow links to doctor pages
         for dataitem in response.css('.tab-contentphone li.cntanr .store-details'):
             item = Item()
             item["name"] = self.extract_with_css(dataitem, 'h2 a::attr("title")')
